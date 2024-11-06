@@ -1,0 +1,83 @@
+﻿@startuml
+
+package "devices" {
+    class DevicesController {
+        - service : DevicesService
+        <<constructor>> DevicesController(service_ : DevicesService)
+        + create(device_dto: DeviceDTO)
+        + get(uuid: UUID)
+        + update(device_dto: DeviceDTO)
+        + delete(uuid: UUID)
+    }
+
+    interface DevicesService {
+        + {abstract} create(device_dto: DeviceDTO)
+        + {abstract} get(uuid: UUID)
+        + {abstract} update(device_dto: DeviceDTO)
+        + {abstract} delete(uuid: UUID)
+    }
+    class DevicesServiceImpl implements DevicesService {
+        - repository : DevicesRepository
+        - adapter_selector : VendorAdapterSelector
+        <<constructor>> DevicesServiceImpl(repository_ : DevicesRepository, adapter_selector_ : VendorAdapterSelector)
+        + create(device_dto: DeviceDTO)
+        + get(uuid: UUID)
+        + update(device_dto: DeviceDTO)
+        + delete(uuid: UUID)
+    }
+
+    interface DevicesRepository {
+        + {abstract} create(device_entity: Entity)
+        + {abstract} get(uuid: UUID)
+        + {abstract} update(device_entity: DeviceEntity)
+        + {abstract} delete(uuid: UUID)
+    }
+
+    interface VendorAdapterSelector {
+        + {abstract} get_adapter(device_type : int) : VendorAdapter
+    }
+
+    class VendorAdapterSelectorImpl implements VendorAdapterSelector {
+        - adapters : List<VendorAdapter>
+        + get_adapter(device_type : int) : VendorAdapter
+    }
+
+    interface VendorAdapter {
+        + {abstract} get_data(connect_url: string) : string
+        + {abstract} send_command(connect_url: string)
+    }
+    class VendorAdapter1 implements VendorAdapter {
+        <<constructor>> VendorAdapter1()
+        + get_data(connect_url: string) : string
+        + send_command(connect_url: string)
+    }
+
+    struct DeviceDTO {
+        home_uuid : UUID
+        type : int
+        connect_url : string
+    }
+
+    struct DeviceEntity {
+        uuid : UUID
+        home_uuid : UUID
+        type : int
+        connect_url : string
+        status : string
+    }
+
+    DevicesController::service *-- DevicesService
+    DevicesController::create <.. DeviceDTO
+    DevicesController::update <.. DeviceDTO
+    DevicesService::create <.. DeviceDTO
+    DevicesService::update <.. DeviceDTO
+    DevicesServiceImpl::create <.. DeviceDTO
+    DevicesServiceImpl::update <.. DeviceDTO
+    DevicesServiceImpl::repository *-- DevicesRepository
+    DevicesServiceImpl::adapter_selector *-- VendorAdapterSelector
+    VendorAdapterSelectorImpl::adapters  *-- VendorAdapter
+    DevicesRepository::create <.. DeviceEntity
+    DevicesRepository::update <.. DeviceEntity
+}
+
+@enduml

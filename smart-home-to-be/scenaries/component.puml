@@ -1,0 +1,36 @@
+﻿@startuml
+
+!include <C4/C4_Component>
+
+title Component diagram for Manage scenaries service
+
+Container(api_gateway, "API Gateway", "Nginx", "Route/Auth/Load balansing")
+
+Container_Boundary(scenaries, "Scenaries microservice") {
+    Component(scenaries_controller, "Scenaries Controller", "MVC Rest Controller", "Provides API endpoints for Scenaries Service")
+    Component(scenaries_service, "Scenaries Service", "Service layer component", "Busines logic")
+    Component(scenaries_worker, "Scenaries Workers Service", "Service layer component", "Do scheduled work")
+    Component(workers_pool, "Workers pool", "Service layer component", "Provide workers for run scheduled jobs")
+    Component(scenaries_dto, "Scenaries DTO", "Data component", "Scenaries DTO")
+    Component(scenaries_entity, "Scenaries Entity", "Data component", "Scenaries Entity")
+    Component(scenaries_repository, "Scenaries Repository", "Repository layer component", "DB logic")
+    Rel(scenaries_controller, scenaries_service, "Use")
+    Rel_R(scenaries_service, scenaries_worker, "Start scheduled job")
+    Rel_D(scenaries_worker, workers_pool, "Get workers for scheduled jobs")
+    Rel(scenaries_service, scenaries_repository, "Use")
+    Rel(scenaries_controller, scenaries_dto, "Use")
+    Rel_U(scenaries_service, scenaries_dto, "Use")
+    Rel(scenaries_service, scenaries_entity, "Use")
+    Rel_U(scenaries_repository, scenaries_entity, "Use")
+}
+
+ContainerDb(scenaries_db, "Scenaries Database", "PostgreSQL", "Stores scenaries", $tags = "storage")
+Container(devices, "Devices Service", "Java, Spring Boot", "Manage modules/devices information")
+System(logging_monitoring, "ELK", "Store services logs and metrics.")
+
+Rel_R(scenaries_repository, scenaries_db, "Stores data in", "JDBC")
+Rel_D(api_gateway, scenaries_controller, "Manage scenaries", "REST")
+Rel_R(scenaries_worker, devices, "Get device current state/send command to device", "REST")
+Rel_L(logging_monitoring, scenaries_controller, "Get logs/metrics", "REST")
+
+@enduml

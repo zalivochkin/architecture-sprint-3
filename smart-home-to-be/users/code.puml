@@ -1,0 +1,60 @@
+﻿@startuml
+
+package "users" {
+    class UsersController {
+        - service : UsersService
+        <<constructor>> UsersController(service_ : UsersService)
+        + create(user_dto: UserDTO)
+        + get(email: string)
+        + update(user_dto: UserDTO)
+        + delete(email: string)
+    }
+
+    interface UsersService {
+        + {abstract} create(user_dto: UserDTO)
+        + {abstract} get(email: string)
+        + {abstract} update(user_dto: UserDTO)
+        + {abstract} delete(email: string)
+    }
+    class UsersServiceImpl implements UsersService {
+        - repository : UsersRepository
+        <<constructor>> UsersServiceImpl(repository_ : UsersRepository)
+        + create(user_dto: UserDTO)
+        + get(email: string)
+        + update(user_dto: UserDTO)
+        + delete(email: string)
+    }
+
+    interface UsersRepository {
+        + {abstract} create(user_entity: UserEntity)
+        + {abstract} get(uuid : UUID)
+        + {abstract} update(user_entity: UserEntity)
+        + {abstract} delete(uuid : UUID)
+    }
+
+    struct UserDTO {
+        email : string
+        first_name : string
+        last_name : string
+    }
+
+    struct UserEntity {
+        uuid : UUID
+        email : string
+        first_name : string
+        last_name : string
+    }
+
+    UsersController::service *-- UsersService
+    UsersController::create <.. UserDTO
+    UsersController::update <.. UserDTO
+    UsersService::create <.. UserDTO
+    UsersService::update <.. UserDTO
+    UsersServiceImpl::create <.. UserDTO
+    UsersServiceImpl::update <.. UserDTO
+    UsersServiceImpl::repository *-- UsersRepository
+    UsersRepository::create <.. UserEntity
+    UsersRepository::update <.. UserEntity
+}
+
+@enduml

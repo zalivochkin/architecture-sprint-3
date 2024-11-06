@@ -1,0 +1,49 @@
+﻿@startuml
+
+skinparam linetype ortho
+
+entity User {
+  *uuid : UUID <<generated>>
+  --
+  *email : string
+  first_name : string
+  last_name : string
+}
+
+entity House {
+  *uuid : UUID <<generated>>
+  --
+  *owner_uuid : UUID <<FK>>
+  address : string
+}
+
+entity Device {
+  *uuid : UUID <<generated>>
+  --
+  *home_uuid : UUID <<FK>>
+  type : int
+  connect_url : string
+  status : string
+}
+
+entity Scenario {
+  *uuid : UUID <<generated>>
+  --
+  *home_uuid : UUID <<FK>>
+  scenario : string
+  cron : string
+}
+
+entity Telemetry {
+  *uuid : UUID <<generated>>
+  --
+  *device_uuid : UUID <<FK>>
+  data : string
+}
+
+User ||..o{ House
+House ||..o{ Device
+House ||..o{ Scenario
+Device ||..o{ Telemetry
+
+@enduml

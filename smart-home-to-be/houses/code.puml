@@ -1,0 +1,58 @@
+﻿@startuml
+
+package "houses" {
+    class HousesController {
+        - service : HousesService
+        <<constructor>> HousesController(service_ : HousesService)
+        + create(house_dto: HouseDTO)
+        + get(uuid: UUID)
+        + update(house_dto: HouseDTO)
+        + delete(uuid: UUID)
+    }
+
+    interface HousesService {
+        + {abstract} create(house_dto: HouseDTO)
+        + {abstract} get(uuid: UUID)
+        + {abstract} update(house_dto: HouseDTO)
+        + {abstract} delete(uuid: UUID)
+    }
+    class HousesServiceImpl implements HousesService {
+        - repository : HousesRepository
+        <<constructor>> HousesServiceImpl(repository_ : HousesRepository)
+        + create(house_dto: HouseDTO)
+        + get(uuid: UUID)
+        + update(house_dto: HouseDTO)
+        + delete(uuid: UUID)
+    }
+
+    interface HousesRepository {
+        + {abstract} create(house_entity: HouseEntity)
+        + {abstract} get(uuid: UUID)
+        + {abstract} update(house_entity: HouseEntity)
+        + {abstract} delete(uuid: UUID)
+    }
+
+    struct HouseDTO {
+        owner_uuid : UUID
+        address : string
+    }
+
+    struct HouseEntity {
+        uuid : UUID
+        owner_uuid : UUID
+        address : string
+    }
+
+    HousesController::service *-- HousesService
+    HousesController::create <.. HouseDTO
+    HousesController::update <.. HouseDTO
+    HousesService::create <.. HouseDTO
+    HousesService::update <.. HouseDTO
+    HousesServiceImpl::create <.. HouseDTO
+    HousesServiceImpl::update <.. HouseDTO
+    HousesServiceImpl::repository *-- HousesRepository
+    HousesRepository::create <.. HouseEntity
+    HousesRepository::update <.. HouseEntity
+}
+
+@enduml

@@ -1,0 +1,42 @@
+﻿@startuml
+
+package "users" {
+    interface UsersService
+    struct UserDTO
+    UsersService -[hidden]-> UserDTO
+}
+
+package "auth" {
+    class AuthController {
+        - service : AuthService
+        <<constructor>> AuthController(service_ : AuthService)
+        +Auth(email:string) : string
+
+    }
+
+    interface AuthService {
+        +{abstract}Auth(email:string) : string
+    }
+    class AuthServiceImpl implements AuthService {
+        - users_service : UsersService
+        - token_service : TokenService
+        <<constructor>> AuthServiceImpl(users_service_ : UsersService, token_service_ : TokenService)
+        +Auth(email:string) : string
+    }
+
+    interface TokenService {
+        +{abstract}BuildJWT(user_data:UserDTO) : string
+    }
+    class TokenServiceImpl implements TokenService {
+        - service : UsersService
+        <<constructor>> TokenServiceImpl(service_ : UsersService)
+        +BuildJWT(user_data:UserDTO) : string
+    }
+
+    AuthController::service *-- AuthService
+    AuthServiceImpl::users_service *-- UsersService
+    AuthServiceImpl::token_service *-- TokenService
+    TokenService::BuildJWT <.. UserDTO
+}
+
+@enduml

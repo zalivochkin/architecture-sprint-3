@@ -1,0 +1,17 @@
+﻿@startuml
+
+!include <C4/C4_Context>
+
+title System Context diagram for Smart Home Microservices
+
+Person(customer, "Smart Home Customer", "A customer of the Smart Home.")
+System_Ext(frontend, "Smart Home System Web Page", "Allows customers to interact with the Smart Home System.")
+System(smart_home_system, "Smart Home System", "Handle endpoints to control the devices.")
+
+System_Ext(smart_module, "Sensor/Actuator/Module", "Some vendor module")
+
+Rel(customer, frontend, "Use web page")
+Rel(frontend, smart_home_system, "Call endpoints")
+Rel(smart_home_system, smart_module, "Vendor specific protocol")
+
+@enduml
