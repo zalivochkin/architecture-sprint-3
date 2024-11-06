@@ -44,47 +44,47 @@
 ## **3. Визуализация архитектуры**
 * **C4 — Уровень контейнеров (Containers)**
 
-  ![System Context diagram for Smart Home Microservices](containers.png)
+  ![Containers diagram for Smart Home Microservices](containers.png)
 * **C4 — Уровень компонентов (Components)**
 
 * Управление пользователями
 
-  ![System Context diagram for Smart Home Microservices](users/component.png)
+  ![Containers diagram for Smart Home Microservices](users/component.png)
 * Аутентификация и авторизация
 
-  ![System Context diagram for Smart Home Microservices](auth/component.png)
+  ![Containers diagram for Smart Home Microservices](auth/component.png)
 * Управление домами
 
-  ![System Context diagram for Smart Home Microservices](houses/component.png)
+  ![Containers diagram for Smart Home Microservices](houses/component.png)
 * Управление модулями и устройствами
 
-  ![System Context diagram for Smart Home Microservices](devices/component.png)
+  ![Containers diagram for Smart Home Microservices](devices/component.png)
 * Управление сценариями автоматизации
 
-  ![System Context diagram for Smart Home Microservices](scenaries/component.png)
+  ![Containers diagram for Smart Home Microservices](scenaries/component.png)
 * Управление телеметрией
 
-  ![System Context diagram for Smart Home Microservices](telemetry/component.png)
+  ![Containers diagram for Smart Home Microservices](telemetry/component.png)
 * **C4 — Уровень кода (Code)**
 
 * Управление пользователями
 
-  ![System Context diagram for Smart Home Microservices](users/code.png)
+  ![Code diagram for Smart Home Microservices](users/code.png)
 * Аутентификация и авторизация
 
-  ![System Context diagram for Smart Home Microservices](auth/code.png)
+  ![Code diagram for Smart Home Microservices](auth/code.png)
 * Управление домами
 
-  ![System Context diagram for Smart Home Microservices](houses/code.png)
+  ![Code diagram for Smart Home Microservices](houses/code.png)
 * Управление модулями и устройствами
 
-  ![System Context diagram for Smart Home Microservices](devices/code.png)
+  ![Code diagram for Smart Home Microservices](devices/code.png)
 * Управление сценариями автоматизации
 
-  ![System Context diagram for Smart Home Microservices](scenaries/code.png)
+  ![Code diagram for Smart Home Microservices](scenaries/code.png)
 * Управление телеметрией
 
-  ![System Context diagram for Smart Home Microservices](telemetry/code.png)
+  ![Code diagram for Smart Home Microservices](telemetry/code.png)
 
 # **Задание 3. ER-диаграммы**
 
@@ -130,7 +130,3 @@
 * **House** — **Device**: один дом может содержать несколько устройств, и каждое устройство принадлежит только одному дому.
 * **House** — **Scenario**: один дом может содержать несколько сценариев, и каждый сценарий принадлежит только одному дому.
 * **Device** — **Telemetry**: одно устройство может создать несколько записей телеметрии, и каждая запись телеметрии принадлежит только одному устройству.
-
-## **4. ER-диаграмма сущностей**
-
-![System Context diagram for Smart Home Microservices](er-diagram.png)
