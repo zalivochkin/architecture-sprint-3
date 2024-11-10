@@ -13,8 +13,14 @@ entity User {
 entity House {
   *uuid : UUID <<generated>>
   --
-  *owner_uuid : UUID <<FK>>
   address : string
+}
+
+entity HouseOwners {
+  *uuid : UUID <<generated>>
+  --
+  *home_uuid : UUID <<FK>>
+  *owner_uuid : UUID <<FK>>
 }
 
 entity Device {
@@ -41,7 +47,8 @@ entity Telemetry {
   data : string
 }
 
-User ||..o{ House
+User ||..o{ HouseOwners
+House ||..o{ HouseOwners
 House ||..o{ Device
 House ||..o{ Scenario
 Device ||..o{ Telemetry
