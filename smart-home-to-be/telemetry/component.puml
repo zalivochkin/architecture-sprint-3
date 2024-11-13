@@ -1,0 +1,36 @@
+﻿@startuml
+
+!include <C4/C4_Component>
+
+title Component diagram for Manage telemetry service
+
+Container(api_gateway, "API Gateway", "Nginx", "Route/Auth/Load balansing")
+
+Container_Boundary(telemetry, "Telemetry microservice") {
+    Component(telemetry_controller, "Telemetry Controller", "MVC Rest Controller", "Provides API endpoints for Telemetry Service")
+    Component(telemetry_service, "Telemetry Service", "Service layer component", "Busines logic")
+    Component(telemetry_worker, "Telemetry Workers Service", "Service layer component", "Do heavy queries")
+    Component(workers_pool, "Workers pool", "Service layer component", "Provide workers for execute heavy telemetry queries")
+    Component(telemetry_dto, "Telemetry DTO", "Data component", "Telemetry DTO")
+    Component(telemetry_entity, "Telemetry Entity", "Data component", "Telemetry Entity")
+    Component(telemetry_repository, "Telemetry Repository", "Repository layer component", "DB logic")
+    Rel(telemetry_controller, telemetry_service, "Use")
+    Rel_R(telemetry_service, telemetry_worker, "Run heavy queries")
+    Rel_U(telemetry_worker, workers_pool, "Get workers for execute heavy telemetry queries")
+    Rel(telemetry_service, telemetry_repository, "Use")
+    Rel(telemetry_controller, telemetry_dto, "Use")
+    Rel_U(telemetry_service, telemetry_dto, "Use")
+    Rel(telemetry_service, telemetry_entity, "Use")
+    Rel_U(telemetry_repository, telemetry_entity, "Use")
+}
+
+ContainerDb(telemetry_db, "Telemetry Database", "PostgreSQL", "Stores devices telemetry", $tags = "storage")
+Container(devices, "Devices Service", "Java, Spring Boot", "Manage modules/devices information")
+System(logging_monitoring, "ELK", "Store services logs and metrics.")
+
+Rel_R(telemetry_repository, telemetry_db, "Stores data in", "JDBC")
+Rel_D(api_gateway, telemetry_controller, "Get telemetry data", "REST")
+Rel_U(devices, telemetry_controller, "Send telemetry data", "REST")
+Rel_L(logging_monitoring, telemetry_controller, "Get logs/metrics", "REST")
+
+@enduml

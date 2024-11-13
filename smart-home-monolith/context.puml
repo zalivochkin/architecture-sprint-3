@@ -1,0 +1,19 @@
+﻿@startuml
+
+!include <C4/C4_Context>
+
+title System Context diagram for Smart Home Monolith
+
+Person(customer, "Smart Home Customer", "A customer of the Smart Home.")
+System_Ext(frontend, "Smart Home System Web Page", "Allows customers to interact with the heating system.")
+System(smart_home_system, "Smart Home System", "Handle endpoints to control the heating system.")
+
+System_Ext(temperature_sensor, "Temperature sensor", "Temperature sensor in customer home.")
+System_Ext(heating_system, "Heating system", "Heating system in customer home.")
+
+Rel(customer, frontend, "Use web page")
+Rel(frontend, smart_home_system, "Call endpoints")
+Rel(smart_home_system, temperature_sensor, "Get temperature")
+Rel(smart_home_system, heating_system, "Set On/Off")
+
+@enduml

@@ -1,0 +1,23 @@
+﻿@startuml
+
+!include <C4/C4_Component>
+
+title Component diagram for authentication and authorization service
+
+Container(api_gateway, "API Gateway", "Nginx", "Route/Auth/Load balansing")
+
+Container_Boundary(auth, "Auth microservice") {
+    Component(auth_controller, "Auth Controller", "MVC Rest Controller", "Provides API endpoints for Auth Service")
+    Component(auth_service, "Auth Service", "Service layer component", "Busines logic")
+    Component(token_service, "Token Service", "Service layer component", "Create JWT token")
+    Rel(auth_controller, auth_service, "Use")
+    Rel_R(auth_service, token_service, "Use")
+}
+
+Container(users, "Users Service", "Java, Spring Boot", "Manage user information")
+
+Rel_D(api_gateway, auth_controller, "Authenticate user", "REST")
+Rel_D(auth_service, users, "Get user authentication and authorization data", "REST")
+
+
+@enduml

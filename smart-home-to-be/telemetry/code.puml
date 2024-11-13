@@ -1,0 +1,67 @@
+﻿@startuml
+
+package "telemetry" {
+    class TelemetryController {
+        - service : TelemetryService
+        <<constructor>> TelemetryController(service_ : TelemetryService)
+        + create(telemetry_dto: TelemetryDTO)
+        + get(uuid: UUID)
+    }
+
+    interface TelemetryService {
+        + {abstract} create(telemetry_dto: TelemetryDTO)
+        + {abstract} get(uuid: UUID)
+    }
+    class TelemetryServiceImpl implements TelemetryService {
+        - repository : TelemetryRepository
+        - workers : TelemetryWorkers
+        <<constructor>> TelemetryServiceImpl(repository_ : TelemetryRepository, workers_ : TelemetryWorkers)
+        + create(telemetry_dto: TelemetryDTO)
+        + get(uuid: UUID)
+    }
+
+    class TelemetryWorkers {
+        - workers_pool : WorkersPool
+        + run_query(query : string)
+    }
+
+    interface WorkersPool {
+        + {abstract} get()
+    }
+
+    class WorkersPoolImpl implements WorkersPool {
+        <<constructor>> WorkersPoolImpl(workers_count : int)
+        + get()
+    }
+
+    interface TelemetryRepository {
+        + {abstract} create(telemetry_entity: TelemetryEntity)
+        + {abstract} get(uuid: UUID)
+    }
+
+    struct TelemetryDTO {
+        device_uuid : UUID
+        data : string
+    }
+
+    struct TelemetryEntity {
+        uuid : UUID
+        device_uuid : UUID
+        data : string
+    }
+
+    TelemetryController::service *-- TelemetryService
+    TelemetryController::create <.. TelemetryDTO
+    TelemetryController::update <.. TelemetryDTO
+    TelemetryService::create <.. TelemetryDTO
+    TelemetryService::update <.. TelemetryDTO
+    TelemetryServiceImpl::create <.. TelemetryDTO
+    TelemetryServiceImpl::update <.. TelemetryDTO
+    TelemetryServiceImpl::repository *-- TelemetryRepository
+    TelemetryServiceImpl::workers *-- TelemetryWorkers
+    TelemetryWorkers::workers_pool *-- WorkersPool
+    TelemetryRepository::create <.. TelemetryEntity
+    TelemetryRepository::update <.. TelemetryEntity
+}
+
+@enduml

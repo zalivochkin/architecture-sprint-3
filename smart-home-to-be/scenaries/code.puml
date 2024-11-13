@@ -1,0 +1,77 @@
+﻿@startuml
+
+package "scenaries" {
+    class ScenariesController {
+        - service : ScenariesService
+        <<constructor>> ScenariesController(service_ : ScenariesService)
+        + create(scenario_dto: ScenarioDTO)
+        + get(uuid: UUID)
+        + update(scenario_dto: ScenarioDTO)
+        + delete(uuid: UUID)
+    }
+
+    interface ScenariesService {
+        + {abstract} create(scenario_dto: ScenarioDTO)
+        + {abstract} get(uuid: UUID)
+        + {abstract} update(scenario_dto: ScenarioDTO)
+        + {abstract} delete(uuid: UUID)
+    }
+    class ScenariesServiceImpl implements ScenariesService {
+        - repository : ScenariesRepository
+        - workers : ScenariesWorkers
+        <<constructor>> ScenariesServiceImpl(repository_ : ScenariesRepository, workers_ : ScenariesWorkers)
+        + create(scenario_dto: ScenarioDTO)
+        + get(uuid: UUID)
+        + update(scenario_dto: ScenarioDTO)
+        + delete(uuid: UUID)
+    }
+
+    class ScenariesWorkers {
+        - workers_pool : WorkersPool
+        + run(scenario : string)
+    }
+
+    interface WorkersPool {
+        + {abstract} get()
+    }
+
+    class WorkersPoolImpl implements WorkersPool {
+        <<constructor>> WorkersPoolImpl(workers_count : int)
+        + get()
+    }
+
+    interface ScenariesRepository {
+        + {abstract} create(scenario_entity: ScenarioEntity)
+        + {abstract} get(uuid: UUID)
+        + {abstract} update(scenario_entity: ScenarioEntity)
+        + {abstract} delete(uuid: UUID)
+    }
+
+    struct ScenarioDTO {
+        home_uuid : UUID
+        scenario : string
+        cron : string
+    }
+
+    struct ScenarioEntity {
+        uuid : UUID
+        home_uuid : UUID
+        scenario : string
+        cron : string
+    }
+
+    ScenariesController::service *-- ScenariesService
+    ScenariesController::create <.. ScenarioDTO
+    ScenariesController::update <.. ScenarioDTO
+    ScenariesService::create <.. ScenarioDTO
+    ScenariesService::update <.. ScenarioDTO
+    ScenariesServiceImpl::create <.. ScenarioDTO
+    ScenariesServiceImpl::update <.. ScenarioDTO
+    ScenariesServiceImpl::repository *-- ScenariesRepository
+    ScenariesServiceImpl::workers *-- ScenariesWorkers
+    ScenariesWorkers::workers_pool *-- WorkersPool
+    ScenariesRepository::create <.. ScenarioEntity
+    ScenariesRepository::update <.. ScenarioEntity
+}
+
+@enduml

@@ -1,0 +1,38 @@
+﻿@startuml
+
+!include <C4/C4_Component>
+
+title Component diagram for Manage module/device service
+
+Container(api_gateway, "API Gateway", "Nginx", "Route/Auth/Load balansing")
+
+Container_Boundary(devices, "Devices microservice") {
+    Component(devices_controller, "Devices Controller", "MVC Rest Controller", "Provides API endpoints for Devices Service")
+    Component(devices_service, "Devices Service", "Service layer component", "Busines logic")
+    Component(devices_adaptor, "Vendor Protocol Adaptor", "Service layer component", "Adaptor for vendor specific device protocol")
+    Component(devices_dto, "Devices DTO", "Data component", "Devices DTO")
+    Component(devices_entity, "Devices Entity", "Data component", "Devices Entity")
+    Component(devices_repository, "Devices Repository", "Repository layer component", "DB logic")
+    Rel(devices_controller, devices_service, "Use")
+    Rel(devices_service, devices_repository, "Use")
+    Rel(devices_controller, devices_dto, "Use")
+    Rel_U(devices_service, devices_dto, "Use")
+    Rel(devices_service, devices_adaptor, "Use")
+    Rel(devices_adaptor, devices_service, "Send telemetry data")
+    Rel(devices_service, devices_entity, "Use")
+    Rel_U(devices_repository, devices_entity, "Use")
+}
+
+System_Ext(smart_module, "Sensor/Actuator/Module", "Some vendor module")
+ContainerDb(devices_db, "Devices Database", "PostgreSQL", "Stores devices information", $tags = "storage")
+Container(telemetry, "Telemetry Service", "Java, Spring Boot", "Manage module/device telemetry")
+System(logging_monitoring, "ELK", "Store services logs and metrics.")
+
+Rel_L(devices_repository, devices_db, "Stores data in", "JDBC")
+Rel_D(api_gateway, devices_controller, "Manage module/device information", "REST")
+Rel(devices_adaptor, smart_module, "Setup/Read/Control module/device")
+Rel(smart_module, devices_adaptor, "Send telemetry data")
+Rel_L(devices_service, telemetry, "Send telemetry data", "REST")
+Rel_L(logging_monitoring, devices_controller, "Get logs/metrics", "REST")
+
+@enduml

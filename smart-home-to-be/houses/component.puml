@@ -1,0 +1,30 @@
+﻿@startuml
+
+!include <C4/C4_Component>
+
+title Component diagram for Manage houses service
+
+Container(api_gateway, "API Gateway", "Nginx", "Route/Auth/Load balansing")
+
+Container_Boundary(houses, "Houses microservice") {
+    Component(houses_controller, "Houses Controller", "MVC Rest Controller", "Provides API endpoints for Houses Service")
+    Component(houses_service, "Houses Service", "Service layer component", "Busines logic")
+    Component(houses_dto, "Houses DTO", "Data component", "Houses DTO")
+    Component(houses_entity, "Houses Entity", "Data component", "Houses Entity")
+    Component(houses_repository, "Houses Repository", "Repository layer component", "DB logic")
+    Rel(houses_controller, houses_service, "Use")
+    Rel(houses_service, houses_repository, "Use")
+    Rel(houses_controller, houses_dto, "Use")
+    Rel_U(houses_service, houses_dto, "Use")
+    Rel(houses_service, houses_entity, "Use")
+    Rel_U(houses_repository, houses_entity, "Use")
+}
+
+ContainerDb(houses_db, "Houses Database", "PostgreSQL", "Stores houses information", $tags = "storage")
+System(logging_monitoring, "ELK", "Store services logs and metrics.")
+
+Rel_R(houses_repository, houses_db, "Stores data in", "JDBC")
+Rel_D(api_gateway, houses_controller, "Manage house information", "REST")
+Rel_L(logging_monitoring, houses_controller, "Get logs/metrics", "REST")
+
+@enduml

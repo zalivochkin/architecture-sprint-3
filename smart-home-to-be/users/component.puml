@@ -1,0 +1,32 @@
+﻿@startuml
+
+!include <C4/C4_Component>
+
+title Component diagram for Manage user service
+
+Container(api_gateway, "API Gateway", "Nginx", "Route/Auth/Load balansing")
+
+Container_Boundary(users, "Users microservice") {
+    Component(users_controller, "Users Controller", "MVC Rest Controller", "Provides API endpoints for Users Service")
+    Component(users_service, "Users Service", "Service layer component", "Busines logic")
+    Component(users_dto, "Users DTO", "Data component", "Users DTO")
+    Component(users_entity, "Users Entity", "Data component", "Users Entity")
+    Component(users_repository, "Users Repository", "Repository layer component", "DB logic")
+    Rel(users_controller, users_service, "Use")
+    Rel(users_service, users_repository, "Use")
+    Rel(users_controller, users_dto, "Use")
+    Rel_U(users_service, users_dto, "Use")
+    Rel(users_service, users_entity, "Use")
+    Rel_U(users_repository, users_entity, "Use")
+}
+
+ContainerDb(users_db, "Users Database", "PostgreSQL", "Stores user information", $tags = "storage")
+Container(auth, "Auths Service", "Java, Spring Boot", "Manage user access information, create JWT tokens")
+System(logging_monitoring, "ELK", "Store services logs and metrics.")
+
+Rel_R(users_repository, users_db, "Stores data in", "JDBC")
+Rel_D(api_gateway, users_controller, "Manage user profile information", "REST")
+Rel_R(auth, users_controller, "Get user authentication data", "REST")
+Rel_U(logging_monitoring, users_controller, "Get logs/metrics", "REST")
+
+@enduml

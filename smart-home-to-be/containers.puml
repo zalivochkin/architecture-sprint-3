@@ -1,0 +1,49 @@
+﻿@startuml
+!include <C4/C4_Container>
+
+title Container diagram for Internet Banking System
+
+System_Ext(frontend, "Smart Home System Web Page", "Allows customers to interact with the heating system.")
+
+System_Boundary(smart_home_system, "Smart Home") {
+    Container(api_gateway, "API Gateway", "Nginx", "Route/Auth/Load balansing")
+    Container(users, "Users Service", "Java, Spring Boot", "Manage user information")
+    ContainerDb(users_db, "Users Database", "PostgreSQL", "Stores user information", $tags = "storage")
+    Container(auth, "Auths Service", "Java, Spring Boot", "Manage user access information, create JWT tokens")
+    Container(houses, "Houses Service", "Java, Spring Boot", "Manage houses information")
+    ContainerDb(houses_db, "Houses Database", "PostgreSQL", "Stores house information", $tags = "storage")
+    Container(devices, "Devices Service", "Java, Spring Boot", "Manage modules/devices information")
+    ContainerDb(devices_db, "Devices Database", "PostgreSQL", "Stores modules/devices information", $tags = "storage")
+    Container(scenaries, "Scenaries Service", "Java, Spring Boot", "Manage scenaries")
+    ContainerDb(scenaries_db, "Scenaries Database", "PostgreSQL", "Stores scenaries", $tags = "storage")
+    Container(telemetry, "Telemetry Service", "Java, Spring Boot", "Manage devices telemetry")
+    ContainerDb(telemetry_db, "Telemetry Database", "PostgreSQL", "Stores devices telemetry", $tags = "storage")
+    System(logging_monitoring, "ELK", "Store services logs and metrics.")
+}
+
+System_Ext(smart_module, "Sensor/Actuator/Module", "Some vendor module")
+
+Rel(frontend, api_gateway, "Call endpoints", "REST")
+Rel_L(api_gateway, users, "Manage user profile information", "REST")
+Rel(api_gateway, auth, "Authenticate user", "REST")
+Rel_D(auth, users, "Get user authentication data", "REST")
+Rel_L(users, users_db, "Stores data in", "JDBC")
+Rel(api_gateway, houses, "Manage house information", "REST")
+Rel_D(houses, houses_db, "Stores data in", "JDBC")
+Rel(api_gateway, devices, "Manage module/device information", "REST")
+Rel_R(devices, smart_module, "Vendor specific protocol")
+Rel_D(devices, devices_db, "Stores data in", "JDBC")
+Rel(api_gateway, scenaries, "Manage scenaries information", "REST")
+Rel_D(scenaries, scenaries_db, "Stores data in", "JDBC")
+Rel(api_gateway, telemetry, "Get telemetry data", "REST")
+Rel(devices, telemetry, "Send telemetry data", "REST")
+Rel(scenaries, devices, "Get device current state/send command to device", "REST")
+Rel_D(telemetry, telemetry_db, "Stores data in", "JDBC")
+Rel_U(logging_monitoring, users, "Get logs/metrics", "REST")
+Rel_U(logging_monitoring, auth, "Get logs/metrics", "REST")
+Rel_U(logging_monitoring, houses, "Get logs/metrics", "REST")
+Rel_U(logging_monitoring, devices, "Get logs/metrics", "REST")
+Rel_U(logging_monitoring, scenaries, "Get logs/metrics", "REST")
+Rel_U(logging_monitoring, telemetry, "Get logs/metrics", "REST")
+
+@enduml
