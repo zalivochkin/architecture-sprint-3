@@ -1,0 +1,642 @@
+openapi: 3.0.3
+info:
+  title: Swagger Smart Home - OpenAPI 3.0
+  description: |-
+    This is a OpenAPI 3.0 specification for Smart Home.
+  version: 0.0.1
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://swagger.smart_home.com/api/v1
+tags:
+  - name: user
+    description: User for Smart Home
+  - name: house
+    description: Users house
+  - name: devices
+    description: Devices in house
+  - name: scenario
+    description: Scenaries for control devices
+  - name: telemetry
+    description: Device telemetry record
+paths:
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '500':
+          description: Internal server error
+  /user/{email}:
+    get:
+      tags:
+        - user
+      summary: Get user by email
+      description: 'This can only be done by the other Smart Home service.'
+      operationId: getUserByEmail
+      parameters:
+        - name: email
+          in: path
+          description: 'The email that needs to be fetched.'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid email supplied
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+    put:
+      tags:
+        - user
+      summary: Update user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - name: email
+          in: path
+          description: email that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent user in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        default:
+          description: successful operation
+        '400':
+          description: Invalid email supplied
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+        - name: email
+          in: path
+          description: The email that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: successful operation
+        '400':
+          description: Invalid email supplied
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+  /house:
+    post:
+      tags:
+        - house
+      summary: Create house
+      description: This can only be done by the logged in user.
+      operationId: createHouse
+      requestBody:
+        description: Created house object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/House'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/House'
+        '500':
+          description: Internal server error
+  /house/{uuid}:
+    get:
+      tags:
+        - house
+      summary: Get house by uuid
+      description: This can only be done by the logged in user.
+      operationId: getHouseByUuid
+      parameters:
+        - name: uuid
+          in: path
+          description: 'The uuid that needs to be fetched.'
+          required: true
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/House'
+        '400':
+          description: Invalid uuid supplied
+        '404':
+          description: House not found
+        '500':
+          description: Internal server error
+    put:
+      tags:
+        - house
+      summary: Update house
+      description: This can only be done by the logged in user.
+      operationId: updateHouse
+      parameters:
+        - name: uuid
+          in: path
+          description: uuid that need to be updated
+          required: true
+          schema:
+            type: string
+            format: UUID
+      requestBody:
+        description: Update an existent house in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/House'
+      responses:
+        default:
+          description: successful operation
+        '400':
+          description: Invalid uuid supplied
+        '404':
+          description: House not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - house
+      summary: Delete house
+      description: This can only be done by the logged in user.
+      operationId: deleteHouse
+      parameters:
+        - name: uuid
+          in: path
+          description: The uuid that needs to be deleted
+          required: true
+          schema:
+            type: string
+            format: UUID
+      responses:
+        default:
+          description: successful operation
+        '400':
+          description: Invalid uuid supplied
+        '404':
+          description: House not found
+        '500':
+          description: Internal server error
+  /device:
+    post:
+      tags:
+        - device
+      summary: Create device
+      description: This can only be done by the logged in user.
+      operationId: createDevice
+      requestBody:
+        description: Created device object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '500':
+          description: Internal server error
+  /device/{uuid}:
+    get:
+      tags:
+        - device
+      summary: Get device by uuid
+      description: This can only be done by the logged in user.
+      operationId: getDeviceByUuid
+      parameters:
+        - name: uuid
+          in: path
+          description: 'The uuid that needs to be fetched.'
+          required: true
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '400':
+          description: Invalid uuid supplied
+        '404':
+          description: Device not found
+        '500':
+          description: Internal server error
+    put:
+      tags:
+        - device
+      summary: Update device
+      description: This can only be done by the logged in user.
+      operationId: updateDevice
+      parameters:
+        - name: uuid
+          in: path
+          description: uuid that need to be updated
+          required: true
+          schema:
+            type: string
+            format: UUID
+      requestBody:
+        description: Update an existent device in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+      responses:
+        default:
+          description: successful operation
+        '400':
+          description: Invalid uuid supplied
+        '404':
+          description: Device not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - device
+      summary: Delete device
+      description: This can only be done by the logged in user.
+      operationId: deleteDevice
+      parameters:
+        - name: uuid
+          in: path
+          description: The uuid that needs to be deleted
+          required: true
+          schema:
+            type: string
+            format: UUID
+      responses:
+        default:
+          description: successful operation
+        '400':
+          description: Invalid uuid supplied
+        '404':
+          description: Device not found
+        '500':
+          description: Internal server error
+    post:
+      tags:
+        - device
+      summary: Send command to device
+      description: 'This can only be done by the other Smart Home service.'
+      operationId: sendCommandToDevice
+      requestBody:
+        description: Send command to device
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceCommand'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '400':
+          description: Invalid uuid supplied
+        '404':
+          description: Device not found
+        '500':
+          description: Internal server error
+  /scenario:
+    post:
+      tags:
+        - scenario
+      summary: Create scenario
+      description: This can only be done by the logged in user.
+      operationId: createScenario
+      requestBody:
+        description: Created scenario object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+        '500':
+          description: Internal server error
+  /scenario/{uuid}:
+    get:
+      tags:
+        - scenario
+      summary: Get scenario by uuid
+      description: This can only be done by the logged in user.
+      operationId: getScenarioByUuid
+      parameters:
+        - name: uuid
+          in: path
+          description: 'The uuid that needs to be fetched.'
+          required: true
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+        '400':
+          description: Invalid uuid supplied
+        '404':
+          description: Scenario not found
+        '500':
+          description: Internal server error
+    put:
+      tags:
+        - scenario
+      summary: Update scenario
+      description: This can only be done by the logged in user.
+      operationId: updateScenario
+      parameters:
+        - name: uuid
+          in: path
+          description: uuid that need to be updated
+          required: true
+          schema:
+            type: string
+            format: UUID
+      requestBody:
+        description: Update an existent scenario in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+      responses:
+        default:
+          description: successful operation
+        '400':
+          description: Invalid uuid supplied
+        '404':
+          description: Scenario not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - scenario
+      summary: Delete scenario
+      description: This can only be done by the logged in user.
+      operationId: deleteScenario
+      parameters:
+        - name: uuid
+          in: path
+          description: The uuid that needs to be deleted
+          required: true
+          schema:
+            type: string
+            format: UUID
+      responses:
+        default:
+          description: successful operation
+        '400':
+          description: Invalid uuid supplied
+        '404':
+          description: Scenario not found
+        '500':
+          description: Internal server error
+  /telemetry:
+    post:
+      tags:
+        - telemetry
+      summary: Create telemetry record
+      description: 'This can only be done by the other Smart Home service.'
+      operationId: createTelemetryRecord
+      requestBody:
+        description: Created telemetry record
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Telemetry'
+      responses:
+        default:
+          description: successful operation
+        '500':
+          description: Internal server error
+  /telemetry/{uuid}:
+    get:
+      tags:
+        - telemetry
+      summary: Get telemetry record by uuid
+      description: This can only be done by the logged in user.
+      operationId: getTelemetryByUuid
+      parameters:
+        - name: uuid
+          in: path
+          description: 'The uuid that needs to be fetched.'
+          required: true
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Telemetry'
+        '400':
+          description: Invalid uuid supplied
+        '404':
+          description: Telemetry record not found
+        '500':
+          description: Internal server error
+  /auth/login:
+    get:
+      tags:
+        - auth
+      summary: Logs user into the system
+      description: 'Logs user into the system'
+      operationId: loginUser
+      parameters:
+        - name: email
+          in: query
+          description: The user email for login
+          required: false
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+        '500':
+          description: Internal server error
+  /auth/logout:
+    get:
+      tags:
+        - auth
+      summary: Logs out user (invalidate jwt token)
+      description: This can only be done by the logged in user.
+      operationId: logoutUser
+      parameters: [ ]
+      responses:
+        default:
+          description: successful operation
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: UUID
+          example: "acf4f3d5-66c1-4358-a0c5-1a0d3b6a3e17"
+        email:
+          type: string
+          example: john@email.com
+        password_hash:
+          type: string
+          example: '$2a$12$D4SKmWoRRrkHVvD0lIGpdOZSINPA4VpWseFJKjN4qgDYchcgWjB5W' # '12345'
+        roles:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                example: 'admin'
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: James
+    House:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: UUID
+          example: "acf4f3d5-66c1-4358-a0c5-1a0d3b6a3e17"
+        address:
+          type: string
+          example: 'Sity Street 1'
+    Device:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: UUID
+          example: "acf4f3d5-66c1-4358-a0c5-1a0d3b6a3e17"
+        home_uuid:
+          type: string
+          format: UUID
+          example: "acf4f3d5-66c1-4358-a0c5-1a0d3b6a3e17"
+        deviceType:
+          type: integer
+          format: int32
+        connect_url:
+          type: string
+          example: "https://192.168.1.111:1029/get_temperature?access_token=885ce240-c979-4bec-99b5-eb4463953bab"
+        status:
+          type: string
+          example: "temperature=23.5&fetch_time=1731499200"
+    DeviceCommand:
+      type: object
+      properties:
+        command:
+          type: string
+          example: "set_on"
+    Scenario:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: UUID
+          example: "acf4f3d5-66c1-4358-a0c5-1a0d3b6a3e17"
+        home_uuid:
+          type: string
+          format: UUID
+          example: "acf4f3d5-66c1-4358-a0c5-1a0d3b6a3e17"
+        scenario:
+          type: string
+          example: "setOn('acf4f3d5-66c1-4358-a0c5-1a0d3b6a3e17')"
+        cron:
+          type: string
+          example: "30     12    *    *    *"
+    Telemetry:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: UUID
+          example: "acf4f3d5-66c1-4358-a0c5-1a0d3b6a3e17"
+        device_uuid:
+          type: string
+          format: UUID
+          example: "acf4f3d5-66c1-4358-a0c5-1a0d3b6a3e17"
+        data:
+          type: string
+          example: "temperature=23.5"
+        create_epoch:
+          type: integer
+          format: uint64
