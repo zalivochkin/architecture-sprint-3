@@ -6,8 +6,16 @@ entity User {
   *uuid : UUID <<generated>>
   --
   *email : string
+  *password_hash : string
   first_name : string
   last_name : string
+}
+
+entity UserRoles {
+  *uuid : UUID <<generated>>
+  --
+  *user_uuid : UUID <<FK>>
+  *role : string
 }
 
 entity House {
@@ -45,9 +53,11 @@ entity Telemetry {
   --
   *device_uuid : UUID <<FK>>
   data : string
+  create_epoch : int
 }
 
 User ||..o{ HouseOwners
+User ||..o{ UserRoles
 House ||..o{ HouseOwners
 House ||..o{ Device
 House ||..o{ Scenario
